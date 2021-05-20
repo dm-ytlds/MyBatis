@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+    该标签指定约束文件。mybatis-3-mapper.dtd为约束文件的名称，扩展名是.dtd。
+    约束文件的作用：限制或者检查在当前文件中出现的标签，属性必须符合mybatis的要求。
+-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    mapper 是当前文件的根标签。
+    namespace 叫做命名空间，谓一致，可以是自定义的字符串，要求使用dao接口的全限定名称。
+    <select>:表示执行语句；
+    <update>:表示更新语句...
+-->
+<mapper namespace="com.dengmin.demi.dao.StudentDao">
+    <!--<select id="selectBlog" resultType="Blog">
+        select * from Blog where id = #{id}
+    </select>-->
+
+    <!--
+        id:执行的sql语句的唯一标识，mybatis会使用这个id的值来找到要执行的sql语句可以自定义，但是要求你使用接口中的方法名称。
+        resultType:表示结构类型。是sql语句执行后得到的ResultSet，遍历这个ResultSet得到java对象的类型。
+            resultType的值写类型的全限定名称。
+    -->
+
+    <!--查询操作01-->
+    <select id="selectStudents" resultType="com.dengmin.demi.domain.Student">
+        select id, name, email, age from student order by id
+    </select>
+
+    <!--查询操作02：
+        parameterType：dao接口中方法参数的数据类型。
+            parameterType的值是java的数据类型全限定名称或者是mybatis定义的别名
+            例如：parameterType="java.lang.Integer"
+                 parameterType="int"
+            注意：parameterType 不是强制需要的，可要可不要。
+    -->
+    <select id="selectStudentById" parameterType="java.lang.Integer" resultType="com.dengmin.demi.domain.Student">
+        select id, name, email, age from student where id=#{id}
+    </select>
+
+    <!--插入操作：
+        注意：插入操作不是写具体的值，而是用 #{属性名} 的方式
+    -->
+    <insert id="insertStudents">
+        insert into student values(#{id}, #{name}, #{email}, #{age})
+    </insert>
+
+    <!--更新操作-->
+    <update id="updateStudent">
+        update student set name='QQ' where id=1007
+    </update>
+</mapper>

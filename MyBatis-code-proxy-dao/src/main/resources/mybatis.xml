@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--控制mybatis的全局行为-->
+    <settings>
+        <!--设置mybatis的输出日志-->
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+
+    <!--
+        环境配置：数据库的连接信息。
+        default:必须和某个environment标签的id属性值一样。
+        如果有多个environment标签，就可以知道使用的是哪个数据库。
+    -->
+    <environments default="development">
+        <!--
+            environment:一个数据库信息的配置环境；
+            id:一个可以自定义的唯一值，表示环境的名称。
+        -->
+        <environment id="development">
+            <!--
+                transactionManager:mybatis的事务类型；
+                type:JDBC(表示使用jdbc中的Connection对象的commit，rollback做事务处理。)
+            -->
+            <transactionManager type="JDBC"/>
+            <!--
+                dataSource:表示数据源，用来连接数据库的。
+                    type:表示数据源的类型，POOLED表示使用连接池。
+            -->
+            <dataSource type="POOLED">
+                <!--
+                    其中的属性值不能随意修改，是固定的。
+                -->
+                <!--数据库的驱动类名-->
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <!--连接数据库的url字符串-->
+                <property name="url" value="jdbc:mysql://localhost:3306/testsql"/>
+                <!--数据库的用户名-->
+                <property name="username" value="root"/>
+                <!--数据库的密码-->
+                <property name="password" value="1233"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--mappers标签指定sql映射文件的位置-->
+    <mappers>
+        <!--
+            一个mapper标签指定一个文件的位置。
+            从类路径开始的路径信息。
+        -->
+        <mapper resource="com/dengmin/demi/dao/StudentDao.xml"/>
+    </mappers>
+</configuration>
+
+
+<!--
+    mybatis的主配置文件：主要定义了数据库的配置信息，
+-->

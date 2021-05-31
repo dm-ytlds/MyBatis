@@ -2,7 +2,9 @@ package com.dengmin.demi;
 
 import com.dengmin.demi.dao.StudentDao;
 import com.dengmin.demi.domain.Student;
+import com.dengmin.demi.objects.QueryParam;
 import com.dengmin.demi.utils.MybatisUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
@@ -68,6 +70,31 @@ public class TestMyBatis {
         session.commit();
         System.out.println("更新了" + udNums + "条语句");
         // 记得关闭资源
+        session.close();
+    }
+
+    @Test
+    public void testSelectParams() {
+        SqlSession session = MybatisUtils.getSqlSession();
+        StudentDao dao = session.getMapper(StudentDao.class);
+        List<Student> list = dao.selectParams("ls", 23);
+        for(Student stu : list) {
+            System.out.println(stu);
+        }
+        session.close();
+    }
+
+    @Test
+    public void testSelectQueryParamsObject() {
+        SqlSession session = MybatisUtils.getSqlSession();
+        StudentDao dao = session.getMapper(StudentDao.class);
+        QueryParam param = new QueryParam();
+        param.setId(1001);
+        param.setName("zs");
+        List<Student> students = dao.selectQueryParams(param);
+        for(Student student : students) {
+            System.out.println(student);
+        }
         session.close();
     }
 }

@@ -117,6 +117,91 @@ MyBatis的动态代理：MyBatis根据dao的方法调用，获取执行sql语句
 
 ### MyBatis的动态代理
 
-​	动态代理：使用SqlSession.getMapper(dao接口.class)获取这个dao接口的对象。
+​	1.动态代理：使用SqlSession.getMapper(dao接口.class)获取这个dao接口的对象。
 
-​	传入参数：从java代码中吧数据传入到mapper文件的sql语句中。
+​	2.传入参数：从java代码中吧数据传入到mapper文件的sql语句中。
+
+​		parameterType：写在mapper文件中的一个属性。表示dao接口中方法的参数数据类型。parameterType不是强制的，mybatis通过反射机制能够发现接口参数的数据类型，一般都不写。
+
+​	3.简单类型的参数
+
+​		简单类型：mybatis把java的基本数据类型（包括它们的包装类）和String都叫做简单类型。
+
+​		在mapper文件中获取简单类型的一个参数的值，使用 #{任意字符} 。使用 #{}之后，mybatis执行sql是使用的jdbc中的PreparedStatement对象。由mybatis执行相应的sql语句。
+
+​	4.多个参数，使用@param命名参数
+
+```java
+接口 public List<Student> selectMutilParam(@Param("myname") String name, @Param("myage") Integer age);
+使用 @Param("参数名") String name
+mapper文件：
+    <select>
+    	select * from student where name=#{myname} or age=#{myage}
+    </select>
+```
+
+​	5.多个参数，使用java对象的属性值，作为参数实际值。（常用）
+
+​		使用对象语法： #{属性名, javaType=类型名称, jdbcType=数据类型} 。
+
+​		javaType：指java中的属性数据类型。
+
+​		jdbcType：在数据库中的数据类型。
+
+​		例如：#{paramName, javaType=java.lang.String, jdbcType=VAECHAR} 。这种方式太繁琐，建议用下面的简化方式：
+
+​	#{属性名} 。因为javaType和jdbcType的值mybatis反射能获取到，不用单独提供。		
+
+
+
+---->#和\$的区别：
+
+​	#是使用？做占位符。使用PrepareStatement执行sql，效率高；而\$不使用占位符，是字符串连接的方式，使用Statement对象执行sql，效率低。
+
+​	使用#的地方也可以用\$替换。只是说\$存在sql注入的风险，在确保安全的情况下，两者可以替换使用。 \$一般用来替换列名或者表名。
+
+ 6.  resultType
+
+     resultType 结果类型，指sql语句执行完毕后，数据转为java对象，java类型是任意的。
+
+     resultType结果类型的值包括：
+
+     ​	（1）类型的全限定名称；
+
+     ​	（2）类型的别名，例如java.lang.Integer别名是int
+
+     处理方式：简化了jdbc中的代码。
+
+7. 自定义别名
+
+   （1）在mybatis主配置文件中定义，使用<typeAlias>标签定义别名；
+
+   （2）可以在resultType中使用自定义别名。
+
+8. resultMap：结果映射，指定列名和java对象的属性对应关系。
+
+   （1）自定义列值然后赋值给哪个属性；
+
+   （2）当你的列名和属性名不一样时，一定使用resultMap
+
+### 动态SQL
+
+​	可以根据条件获取到不同的sql语句。主要是where部分发生变化。
+
+​	动态sql的实现：使用的是mybatis提供的标签，<if> <where> <foreach>
+
+​	（1）<if>是判断条件的，语法：<if test="判断java对象的属性值"> 部分sql语句 </if>
+
+​	（2）<where>用来包含多个<if>的，当多个if有一个成立的，<where>会自动增加一个where关键字，并去掉 if 中多余的and , or 等。
+
+​	（3）<foreach collection="" item="" open="" close="" separator=""> 部分sql语句 </foreach>
+
+​		collection：表示接口中的方法参数的类型，如果是数组使用array，如果是List集合，使用 list
+
+​		item：自定义，表示数组和集合成员的变量
+
+​		open：循环开始时的字符
+
+​		close：循环结束时的字符
+
+​		separator：集合成员之间的分隔符

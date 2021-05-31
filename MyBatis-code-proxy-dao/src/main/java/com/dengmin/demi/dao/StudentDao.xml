@@ -52,4 +52,14 @@
     <update id="updateStudent">
         update student set name='QQ' where id=1007
     </update>
+
+    <!--多个参数@Param-->
+    <select id="selectParams" resultType="com.dengmin.demi.domain.Student">
+        select id ,name, email, age from student where name=#{myname} or age=#{myage}
+    </select>
+
+    <!--多个参数，使用对象的属性值，作为参数的实际值-->
+    <select id="selectQueryParams" resultType="com.dengmin.demi.domain.Student">
+        select id, name, email, age from student where id=#{id} or name=#{name}
+    </select>
 </mapper>

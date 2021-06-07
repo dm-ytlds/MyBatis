@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+    该标签指定约束文件。mybatis-3-mapper.dtd为约束文件的名称，扩展名是.dtd。
+    约束文件的作用：限制或者检查在当前文件中出现的标签，属性必须符合mybatis的要求。
+-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    mapper 是当前文件的根标签。
+    namespace 叫做命名空间，谓一致，可以是自定义的字符串，要求使用dao接口的全限定名称。
+    <select>:表示执行语句；
+    <update>:表示更新语句...
+-->
+<mapper namespace="com.dengmin.demi.dao.StudentDao">
+
+    <!--# 避免条件不满足出现sql语句语法错误，所以加一个ture语句，不一定非得是1=1-->
+    <select id="selectDynamicIf" resultType="com.dengmin.demi.domain.Student">
+        select id, name ,email, age from student
+
+        where 1 = 1 and
+        <if test="name != null and name != ''">
+            name = #{name}
+        </if>
+        <if test="age > 0">
+            and age > #{age}
+        </if>
+    </select>
+
+    <select id="selectDynamicWhere" resultType="com.dengmin.demi.domain.Student">
+        select id, name ,email, age from student
+
+        <where>
+            <if test="name != null and name != ''">
+                name = #{name}
+            </if>
+            <if test="age > 0">
+                and age > #{age}
+            </if>
+        </where>
+    </select>
+</mapper>

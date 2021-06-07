@@ -205,3 +205,80 @@ mapper文件：
 ​		close：循环结束时的字符
 
 ​		separator：集合成员之间的分隔符
+
+​	<SQL片段的使用简介> 
+
+```xml
+<!--定义sql片段-->
+<sql id="自定义名称1">
+    select * from 数据库名
+</sql>
+<!--使用sql片段-->
+<select id = "自定义名称2">
+    <include refid="自定义名称1" />
+    ...
+</select>
+```
+
+### 主配置文件
+
+1.DataSource：表示数据源，java体系中，规定实现了javax.sql.DataSource接口的都是数据源。数据源表示Connection对象的。
+
+​	type：指定数据源的类型。
+
+​		1） POOLED：使用连接池，mybatis会创建pooledDataSource类。
+
+​		2）UNPOOLED：不使用连接池，在每次执行sql语句，先创建连接，执行sql，在关闭连接mybatis会创建一个unpooledDataSource，管理Connection对象的使用。
+
+​		3）JNDI：java命名和目录服务（类似Windows注册表）。
+
+2.数据库的属性配置文件
+
+​	使用的意义和目的：把数据库连接信息放到一个单独的文件中。和mybatis配置文件分开。目的是便于修改，保存，处理多个数据库的信息。
+
+​	（1）在resources目录中定义一个属性配置文件。xxx.properties 。在属性配置文件中，定义数据，格式是key=value。key一般使用 ' . ' 做多级目录。
+
+​	（2）在mybatis的主配置文件中，使用<properties>标签指定文件的位置。在需要使用值的地方，使用 “${key}” 来代替直接填入value值。
+
+3.mapper文件，使用package指定路径。
+
+```xml
+<mappers>
+    <!--使用包名
+		name：xml文件所在的包名，这个包中所有的xml文件一次都能加载给mybatis。
+		使用package的要求：
+		1. mapper文件名称需要和接口名称一样，区分大小写；
+		2. mapper文件和dao接口需要在同一目录下。
+	-->
+    <package name="" />
+    ...
+</mappers>
+```
+
+### 分页 PageHelper
+
+​	Mybatis通用分页插件：PageHelper
+
+​	在pom.xml文件中添加依赖项：
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.github.pagehelper</groupId>
+        <artifactId>pagehelper</artifactId>
+        <version>版本号</version>
+    </dependency>
+</dependencies>
+```
+
+​	在mybatis.xml文件中添加插件标签：
+
+```xml
+<configuration>
+    <plugins>
+        <plugin interceptor="包名" />
+    </plugins>
+    ...
+</configuration>
+```
+
